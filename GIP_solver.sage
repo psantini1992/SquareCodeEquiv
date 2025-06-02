@@ -1,36 +1,38 @@
 from collections import defaultdict
 
-#Computes the graph associated with generator matrix
-#Works only if G has trivial hull, i.e., rank(G*G^T) = k
+
 def graph_from_generator_matrix(G):
+    '''
+    Computes the graph associated with generator matrix
+    Works only if G has trivial hull, i.e., rank(G*G^T) = k
+    '''
     X = G*G.transpose()
     return G.transpose()*X^-1*G
 
 ###########################################################
 
 def count_in_Fq(n, Fq_list, a):
+    '''
+    Countes number of occurrences of finite field elements in input vector a
+    Returns a length-q vector
+    Fq_list must be a list containing the elements of Fq
+    '''
     vals = vector(ZZ, len(Fq_list))
     for i in range(n):
         j = Fq_list.index(a[i])
         vals[j] += 1
     return vals
 
-#Return decision (either True or False) and candidates for images of indices
+
 def solve_GIP(Fq, A_1, A_2):
-    
+    '''
+    Solver for GIP
+    Return decision (either True or False) and candidates for images of indices
+    The input are adjacency matrices for the two graphs
+    '''
     Fq_list = Fq.list()
     n = A_1.ncols()
-    
-    #Now, check the multiset formed by all elements: they must be the same
-#    multiset_1 = []; multiset_2 = []
-#    for i in range(0,n-1):
-#        for j in range(i+1,n):
-#            multiset_1.append(A_1[i,j])
-#            multiset_2.append(A_2[i,j])
-    
-#    if sorted(multiset_1) != sorted(multiset_2):
-#        return False, []
-    
+
     
     #Build a list with all entries of a row, hashed with the element in the diagonal
     #We're gonna use a Python dictionary because it makes finding collisions easier
@@ -83,9 +85,11 @@ def solve_GIP(Fq, A_1, A_2):
     
 ####################################################
 
-#This function assumes every row from A_1 has a unique collision from A_2
 def simple_solve_GIP(Fq, A_1, A_2):
-
+    '''
+    This function assumes graphs are equivalent and every row from A_1 has a unique collision from A_2
+    The function solves search PEP by matching rows
+    '''
     Fq_list = Fq.list()
     n = A_1.ncols()
 
